@@ -1,13 +1,14 @@
 'use strict';
 // Selecting elements
+// For player 1
 const player1Elem = document.querySelector(`.player--0`);
-const score1Elem = document.querySelector(`#score--0`);
+const score1Elem = document.getElementById(`score--0`);
 const curScore1Elem = document.getElementById(`current--0`);
-
+// For player 2
 const player2Elem = document.querySelector(`.player--1`);
 const score2Elem = document.getElementById(`score--1`);
 const curScore2Elem = document.getElementById(`current--1`);
-
+// For everything else
 const diceElem = document.querySelector(`.dice`);
 const btnRollDice = document.querySelector(`.btn--roll`);
 const btnNewGame = document.querySelector(`.btn--new`);
@@ -35,20 +36,38 @@ btnRollDice.addEventListener(`click`, function () {
     if (diceRoll !== 1) {
         // Add dice roll to current score
         currentScore += diceRoll;
-        activePlayer(currentPlayer).textContent = currentScore;
+        document.getElementById(`current--${currentPlayer}`).textContent =
+            currentScore;
     } else {
-        // Switch player if dice roll is 1 and reset current score
-        currentScore = 0;
-        activePlayer(currentPlayer).textContent = currentScore;
-
-        currentPlayer = currentPlayer == 0 ? 1 : 0;
-        player1Elem.classList.toggle(`player--active`);
-        player2Elem.classList.toggle(`player--active`);
+        // Switch player and reset current score if dice roll is 1
+        switchPlayer();
     }
 });
 
-btnHoldScore.addEventListener(`click`, function () {});
+btnHoldScore.addEventListener(`click`, function () {
+    // Add current score to current player's score
+    totalScores[currentPlayer] += currentScore;
+    document.getElementById(`score--${currentPlayer}`).textContent =
+        totalScores[currentPlayer];
 
-const activePlayer = function (currentPlayer) {
-    return document.getElementById(`current--${currentPlayer}`);
+    // Check if player's score hit 100
+    if (totalScores[currentPlayer] >= 100) {
+        alert(`Player ${currentPlayer + 1} win!`);
+    } else {
+        // Switch player and reset current score if no win condition
+        switchPlayer();
+    }
+});
+
+const switchPlayer = function () {
+    currentScore = 0;
+    document.getElementById(`current--${currentPlayer}`).textContent =
+        currentScore;
+    currentPlayer = currentPlayer == 0 ? 1 : 0;
+    player1Elem.classList.toggle(`player--active`);
+    player2Elem.classList.toggle(`player--active`);
 };
+
+// const activePlayer = function (currentPlayer) {
+//     return document.getElementById(`current--${currentPlayer}`);
+// };
